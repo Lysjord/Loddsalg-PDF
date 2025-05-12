@@ -1,0 +1,29 @@
+name: Generate PDF
+
+on: push: paths: - input_data.json workflow_dispatch:
+
+jobs: build: runs-on: ubuntu-latest
+
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v3
+
+  - name: Set up Python
+    uses: actions/setup-python@v4
+    with:
+      python-version: '3.x'
+
+  - name: Install dependencies
+    run: |
+      pip install reportlab pillow
+
+  - name: Generate PDF
+    run: |
+      python generate_loddsalg_pdf.py
+
+  - name: Upload PDF
+    uses: actions/upload-artifact@v3
+    with:
+      name: Loddsalg-PDF
+      path: Lådsalg.pdf
+
