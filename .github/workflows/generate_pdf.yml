@@ -28,7 +28,7 @@ jobs:
           python generate_loddsalg_pdf.py
 
       - name: Upload PDF
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: Loddsalg-PDF
           path: Lådsalg.pdf
