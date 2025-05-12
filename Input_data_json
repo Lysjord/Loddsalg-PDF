@@ -23,7 +23,7 @@ draw_image(c, data.get("logo"), 50, height - 120, 100, 100)
 c.setFont("Helvetica-Bold", 24)
 c.drawCentredString(width / 2, height - 150, "Lådsalg - KSK G13")
 
-# VIPPS-nummer og pris per lodd
+# VIPPS-nummer og pris per lodd 20 kr
 c.setFont("Helvetica", 14)
 c.drawString(50, height - 180, f"VIPPS-nummer: {data.get('vipps_number', '________')}")
 c.drawString(50, height - 200, f"Pris per lodd: {data.get('price_per_ticket', '________')} kr")
