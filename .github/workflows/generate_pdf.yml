@@ -1,4 +1,3 @@
-
 name: Generate PDF
 
 on:
@@ -29,7 +28,7 @@ jobs:
           python generate_loddsalg_pdf.py
 
       - name: Upload PDF
-  uses: actions/upload-artifact@v3
-  with:
-    name: Loddsalg-PDF
-    path: Lådsalg.pdf
+        uses: actions/upload-artifact@v3
+        with:
+          name: Loddsalg-PDF
+          path: Lådsalg.pdf
