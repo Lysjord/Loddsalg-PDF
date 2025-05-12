@@ -1,0 +1,14 @@
+{
+  "logo": "logo.jpg",
+  "vipps_number": "123456",
+  "price_per_ticket": "20",
+  "sponsors": [
+    "sponsor1.jpg",
+    "sponsor2.jpg"
+  ],
+  "prizes": [
+    "1. premie: Fotball med autograf",
+    "2. premie: Treningssett",
+    "3. premie: KSK-caps"
+  ]
+}
