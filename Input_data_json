@@ -1,29 +1,65 @@
-name: Generate PDF
+import json from reportlab.lib.pagesizes import A4 from reportlab.pdfgen import canvas from PIL import Image import os
 
-on: push: paths: - input_data.json workflow_dispatch:
+Filstier
 
-jobs: build: runs-on: ubuntu-latest
+json_path = "input_data.json" output_path = "Lådsalg.pdf"
 
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v3
+PDF-dimensjoner
 
-  - name: Set up Python
-    uses: actions/setup-python@v4
-    with:
-      python-version: '3.x'
+width, height = A4
 
-  - name: Install dependencies
-    run: |
-      pip install reportlab pillow
+Funksjon for å legge inn bilder
 
-  - name: Generate PDF
-    run: |
-      python generate_loddsalg_pdf.py
+def draw_image(c, img_path, x, y, width, height): try: with Image.open(img_path) as img: img = img.convert("RGB") img = img.resize((width, height)) temp_path = "temp_image.jpg" img.save(temp_path) c.drawImage(temp_path, x, y, width=width, height=height) os.remove(temp_path) except Exception as e: print(f"Feil ved innlasting av bilde: {e}")
 
-  - name: Upload PDF
-    uses: actions/upload-artifact@v3
-    with:
-      name: Loddsalg-PDF
-      path: Lådsalg.pdf
+Funksjon for å generere PDF
+
+def generate_pdf(data): c = canvas.Canvas(output_path, pagesize=A4)
+
+# Legg inn logo
+draw_image(c, data.get("logo"), 50, height - 120, 100, 100)
+
+# Overskrift
+c.setFont("Helvetica-Bold", 24)
+c.drawCentredString(width / 2, height - 150, "Lådsalg - KSK G13")
+
+# VIPPS-nummer og pris per lodd
+c.setFont("Helvetica", 14)
+c.drawString(50, height - 180, f"VIPPS-nummer: {data.get('vipps_number', '________')}")
+c.drawString(50, height - 200, f"Pris per lodd: {data.get('price_per_ticket', '________')} kr")
+
+# Midtfelt for sponsorbilder
+c.rect(50, height - 350, width - 100, 150)
+c.drawCentredString(width / 2, height - 370, "Sponsorbilder her (Legges inn manuelt)")
+sponsors = data.get("sponsors", [])
+x_offset = 60
+y_offset = height - 340
+for sponsor in sponsors:
+    draw_image(c, sponsor, x_offset, y_offset, 100, 100)
+    x_offset += 120
+    if x_offset + 100 > width - 60:
+        x_offset = 60
+        y_offset -= 120
+
+# Nedrefelt for premier
+c.rect(50, 50, width - 100, 150)
+c.drawCentredString(width / 2, 120, "Premier - Legges inn manuelt")
+prizes = data.get("prizes", [])
+y_offset = 100
+for prize in prizes:
+    c.drawString(60, y_offset, prize)
+    y_offset -= 15
+    if y_offset < 60:
+        c.showPage()
+        y_offset = height - 60
+
+# Lagre PDF
+c.save()
+
+Les JSON og generer PDF
+
+def main(): try: with open(json_path, "r", encoding="utf-8") as file: data = json.load(file) generate_pdf(data) print(f"PDF generert: {output_path}") except Exception as e: print(f"Feil ved generering av PDF: {e}")
+
+if name == "main": main()
+
 
